@@ -1,0 +1,140 @@
+﻿@model Workshop04.Data.Models.Package
+@{
+    ViewData["Title"] = "Package Details";
+}
+
+<style>
+    .expired-alert {
+        background-color: #f8d7da;
+        border: 2px solid #dc3545;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .expired-badge {
+        background-color: #dc3545;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 0.9rem;
+        display: inline-block;
+        margin-left: 10px;
+    }
+
+    .package-price-box {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+    }
+</style>
+
+<div class="container my-4">
+    @* Display error message if redirected from purchase attempt *@
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <h1>
+        @Model.PkgName
+        @if (!Model.IsActive)
+        {
+            <span class="expired-badge">
+                <i class="bi bi-x-circle-fill"></i> EXPIRED
+            </span>
+        }
+    </h1>
+
+    @if (Model.PkgStartDate.HasValue && Model.PkgEndDate.HasValue)
+    {
+        <p class="text-muted @(!Model.IsActive ? "text-danger fw-bold" : "")">
+            <strong>Travel Dates:</strong>
+            @Model.PkgStartDate.Value.ToString("MMMM dd, yyyy") -
+            @Model.PkgEndDate.Value.ToString("MMMM dd, yyyy")
+        </p>
+    }
+
+    @* Show expired alert if package is not active *@
+    @if (!Model.IsActive)
+    {
+        <div class="expired-alert">
+            <h5 class="text-danger">
+                <i class="bi bi-exclamation-triangle-fill"></i> This Package is No Longer Available
+            </h5>
+            <p class="mb-0">
+                The travel dates for this package have passed. Please browse our other available packages.
+            </p>
+        </div>
+    }
+    else if (Model.DaysUntilExpiry < 30 && Model.DaysUntilExpiry > 0)
+    {
+        <div class="alert alert-warning">
+            <i class="bi bi-clock-fill"></i> <strong>Book Soon!</strong> This package expires in @Model.DaysUntilExpiry days.
+        </div>
+    }
+
+    <hr />
+
+    <p class="lead">@Model.PkgDesc</p>
+
+    @* Price Section *@
+    <div class="package-price-box">
+        <h3 class="text-success mb-0">
+            $@Model.PkgBasePrice.ToString("N2")
+            <small class="text-muted fs-6">per person</small>
+        </h3>
+    </div>
+
+    @if (Model.PackagesProductsSuppliers != null && Model.PackagesProductsSuppliers.Any())
+    {
+        <h5>This package includes:</h5>
+        <ul>
+            @foreach (var pps in Model.PackagesProductsSuppliers)
+            {
+                @if (pps.ProductsSupplier?.Product != null)
+                {
+                    <li>
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        @pps.ProductsSupplier.Product.ProdName
+                    </li>
+                }
+            }
+        </ul>
+    }
+
+    <div class="my-4">
+        @* Conditional Book Button *@
+        @if (Model.IsActive)
+        {
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a class="btn btn-primary me-2" asp-action="Purchase" asp-route-id="@Model.PackageId">
+                    <i class="bi bi-cart-plus"></i> Book Now
+                </a>
+            }
+            else
+            {
+                <a class="btn btn-primary me-2" href="/Identity/Account/Login?returnUrl=@Uri.EscapeDataString($"/Packages/Purchase/{Model.PackageId}")">
+                    <i class="bi bi-box-arrow-in-right"></i> Login to Book
+                </a>
+            }
+        }
+        else
+        {
+            <button class="btn btn-secondary me-2" disabled>
+                <i class="bi bi-x-circle"></i> No Longer Available
+            </button>
+        }
+
+        <a class="btn btn-outline-primary" asp-action="Index">
+            <i class="bi bi-arrow-left"></i> Back to Packages
+        </a>
+    </div>
+</div>

@@ -1,0 +1,172 @@
+﻿@model IEnumerable<Workshop04.Data.Models.Package>
+@{
+    ViewData["Title"] = "Travel Packages";
+}
+
+<style>
+    /* Package Status Badges */
+    .package-card {
+        position: relative;
+    }
+
+    .package-status-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 0.85rem;
+        z-index: 10;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .expired-badge {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .ending-soon-badge {
+        background-color: #ffc107;
+        color: #000;
+    }
+
+    /* Expired Package Styling */
+    .package-card.package-expired {
+        opacity: 0.7;
+        border: 2px solid #dc3545;
+    }
+
+    .package-card.package-expired .package-dates {
+        color: #dc3545 !important;
+    }
+
+    /* Disabled Button */
+    .package-button-disabled {
+        background-color: #6c757d !important;
+        cursor: not-allowed !important;
+        opacity: 0.65;
+    }
+
+    .package-button-disabled:hover {
+        background-color: #6c757d !important;
+        transform: none !important;
+    }
+</style>
+
+@* Hero section *@
+<section class="sub-hero">
+    <div class="hero-content text-center">
+        <h1 class="hero-title">Travel Packages</h1>
+        <p class="hero-subtitle">Start your journey today</p>
+    </div>
+</section>
+@* Package section *@
+<section class="package">
+    @* Display error messages *@
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["PayErrMessage"] != null)
+    {
+        <h4 class="text-center @((bool)(TempData["IsError"])! == true ? "text-danger database-error" : "text-success")">
+            @TempData["PayErrMessage"]
+        </h4>
+    }
+    @if (TempData["Message"] != null)
+    {
+        <h4 class="text-center @((bool)(TempData["IsError"])! == true ? "text-danger database-error" : "text-success")">
+            @TempData["Message"]
+        </h4>
+    }
+
+    <div class="featured-package-grid">
+        @foreach (var package in Model)
+        {
+            @* package card *@
+            <div class="package-card @(!package.IsActive ? "package-expired" : "")">
+                @* NEW: Expired Badge *@
+                @if (!package.IsActive)
+                {
+                    <div class="package-status-badge expired-badge">
+                        <i class="bi bi-x-circle-fill"></i> EXPIRED
+                    </div>
+                }
+                else if (package.DaysUntilExpiry < 30 && package.DaysUntilExpiry > 0)
+                {
+                    <div class="package-status-badge ending-soon-badge">
+                        <i class="bi bi-clock-fill"></i> ENDING SOON
+                    </div>
+                }
+
+                <div class="package-header">
+                    <h3 class="package-title">@package.PkgName</h3>
+                    @* Date *@
+                    @if (package.PkgStartDate.HasValue && package.PkgEndDate.HasValue)
+                    {
+                        <p class="package-dates @(!package.IsActive ? "text-danger" : "")">
+                            @package.PkgStartDate.Value.ToString("MMM dd, yyyy") -
+                            @package.PkgEndDate.Value.ToString("MMM dd, yyyy")
+                        </p>
+                    }
+                    @* Description *@
+                    @if (!string.IsNullOrEmpty(package.PkgDesc))
+                    {
+                        <p class="package-desc">@package.PkgDesc</p>
+                    }
+                </div>
+                @if (package.PackagesProductsSuppliers != null && package.PackagesProductsSuppliers.Any())
+                {
+                    <div class="package-includes">
+                        <h4>Includes:</h4>
+                        <ul>
+                            @foreach (var pps in package.PackagesProductsSuppliers.Take(3))
+                            {
+                                @if (pps.ProductsSupplier?.Product != null)
+                                {
+                                    <li>@pps.ProductsSupplier.Product.ProdName</li>
+                                }
+                            }
+                            @if (package.PackagesProductsSuppliers.Count() > 3)
+                            {
+                                <li class="text-muted">and more...</li>
+                            }
+                        </ul>
+                    </div>
+                }
+                <div class="package-footer">
+                    <div class="package-price-section">
+                        <div class="package-price">$@package.PkgBasePrice.ToString("N2")</div>
+                        <div class="package-per-person">per person</div>
+                    </div>
+                    <div class="package-actions">
+                        <a class="package-button-details" asp-action="Details" asp-route-id="@package.PackageId">Details</a>
+
+                        @* NEW: Conditional Book Button *@
+                        @if (package.IsActive)
+                        {
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                <a class="package-button-book" asp-action="Purchase" asp-route-id="@package.PackageId">Book Now</a>
+                            }
+                            else
+                            {
+                                <a class="package-button-book" href="/Identity/Account/Login?returnUrl=@Uri.EscapeDataString($"/Packages/Purchase/{package.PackageId}")">Login to Book</a>
+                            }
+                        }
+                        else
+                        {
+                            <button class="package-button-book package-button-disabled" disabled>
+                                <i class="bi bi-x-circle"></i> Not Available
+                            </button>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>

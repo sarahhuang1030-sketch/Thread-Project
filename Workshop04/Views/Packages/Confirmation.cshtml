@@ -1,0 +1,112 @@
+﻿@model Workshop04.Data.Models.Booking
+
+@{
+    ViewData["Title"] = "Booking Confirmation";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Success Message -->
+            <div class="alert alert-success text-center py-4">
+                <i class="bi bi-check-circle" style="font-size: 3rem;"></i>
+                <h2 class="mt-3">Booking Confirmed!</h2>
+                <p class="lead">Thank you for your purchase. Your booking has been successfully processed.</p>
+            </div>
+
+            <!-- Booking Details Card -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary">
+                    <h5 class="mb-0 text-white"><i class="bi bi-ticket-detailed"></i> Booking Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <p><strong>Booking Number:</strong></p>
+                            <p class="fs-4 text-primary">@Model.BookingNo</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Booking Date:</strong></p>
+                            <p class="fs-5">@Model.BookingDate?.ToString("MMMM dd, yyyy")</p>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <div class="mb-3">
+                        <h6>Package Information</h6>
+                        <p class="mb-1"><strong>Package:</strong> @Model.Package?.PkgName</p>
+                        @if (Model.Package?.PkgStartDate.HasValue == true && Model.Package?.PkgEndDate.HasValue == true)
+                        {
+                            <p class="mb-1">
+                                <strong>Travel Dates:</strong>
+                                @Model.Package.PkgStartDate.Value.ToString("MMM dd, yyyy") -
+                                @Model.Package.PkgEndDate.Value.ToString("MMM dd, yyyy")
+                            </p>
+                        }
+                    </div>
+
+                    @if (Model.Package?.PackagesProductsSuppliers != null && Model.Package.PackagesProductsSuppliers.Any())
+                    {
+                        <div class="mb-3">
+                            <h6>Package Includes:</h6>
+                            <ul>
+                                @foreach (var pps in Model.Package.PackagesProductsSuppliers)
+                                {
+                                    @if (pps.ProductsSupplier?.Product != null)
+                                    {
+                                        <li>@pps.ProductsSupplier.Product.ProdName</li>
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    }
+
+                    <hr>
+
+                    <div class="mb-3">
+                        <h6>Customer Information</h6>
+                        <p class="mb-1"><strong>Name:</strong> @Model.Customer?.CustFirstName @Model.Customer?.CustLastName</p>
+                        <p class="mb-1"><strong>Email:</strong> @Model.Customer?.CustEmail</p>
+                    </div>
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Total Amount Paid:</strong></p>
+                            <p class="fs-3 text-success mb-0">$@Model.Package?.PkgBasePrice.ToString("N2")</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Payment Method:</strong></p>
+                            <p><i class="bi bi-wallet2"></i> Virtual Wallet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Information -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h6><i class="bi bi-info-circle"></i> Important Information</h6>
+                    <ul class="mb-0">
+                        <li>A confirmation email has been sent to <strong>@Model.Customer?.CustEmail</strong></li>
+                        <li>Please save your booking number <strong>@Model.BookingNo</strong> for future reference</li>
+                        <li>You can view all your bookings in the "My Bookings" section</li>
+                        <li>For any questions or changes, please contact our customer service team</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center mb-4">
+                <a asp-action="MyBookings" class="btn btn-primary btn-lg">
+                    <i class="bi bi-list-ul"></i> View My Bookings
+                </a>
+                <a asp-action="Index" class="btn btn-outline-primary btn-lg">
+                    <i class="bi bi-arrow-left"></i> Browse More Packages
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
