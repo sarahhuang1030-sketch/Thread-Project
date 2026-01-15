@@ -76,8 +76,7 @@ public class TravelExpertsContext : IdentityDbContext<Customer>
         modelBuilder.Entity<Product>().ToTable("products", t => t.ExcludeFromMigrations());
         modelBuilder.Entity<Supplier>().ToTable("suppliers", t => t.ExcludeFromMigrations());
         modelBuilder.Entity<Agency>().ToTable("agencies", t => t.ExcludeFromMigrations());
-
-
+        modelBuilder.Entity<ProductsSupplier>().ToTable("products_suppliers", t => t.ExcludeFromMigrations());
 
         modelBuilder.Entity<Booking>()
       .HasOne(b => b.Customer)
