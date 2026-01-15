@@ -74,11 +74,11 @@ using (var scope = app.Services.CreateScope())
 }
 
 //auto-create/update the SQLite DB on startup
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<TravelExpertsContext>();
-    db.Database.Migrate();
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var db = scope.ServiceProvider.GetRequiredService<TravelExpertsContext>();
+//    db.Database.Migrate();
+//}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
