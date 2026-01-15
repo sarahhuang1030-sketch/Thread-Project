@@ -64,6 +64,13 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+
+builder.Services.AddDbContext<TravelExpertsContext>(options =>
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection"))
+           .UseLowerCaseNamingConvention()
+);
+
 var app = builder.Build();
 
 // Create the database if it doesn't exist
@@ -74,11 +81,7 @@ var app = builder.Build();
 //}
 
 
-builder.Services.AddDbContext<TravelExpertsContext>(options =>
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString("DefaultConnection"))
-           .UseLowerCaseNamingConvention()
-);
+
 
 //auto-create/update the SQLite DB on startup
 //using (var scope = app.Services.CreateScope())
