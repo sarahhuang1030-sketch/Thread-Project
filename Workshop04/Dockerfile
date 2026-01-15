@@ -3,8 +3,9 @@ WORKDIR /src
 
 COPY . .
 
-RUN dotnet restore ./Workshop04/Workshop04.csproj
-RUN dotnet publish ./Workshop04/Workshop04.csproj -c Release -o /app/publish
+RUN dotnet restore ./Workshop04/Workshop04/Workshop04.csproj
+RUN dotnet publish ./Workshop04/Workshop04/Workshop04.csproj -c Release -o /app/publish
+
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
