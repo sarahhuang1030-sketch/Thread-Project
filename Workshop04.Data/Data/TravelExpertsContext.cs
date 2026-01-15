@@ -48,6 +48,9 @@ public class TravelExpertsContext : IdentityDbContext<Customer>
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        // ✅ Make dbo the default schema (matches your pgloader-imported tables)
+        modelBuilder.HasDefaultSchema("dbo");
+
         // ✅ REQUIRED for Identity
         base.OnModelCreating(modelBuilder);
 

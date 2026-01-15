@@ -1,0 +1,7 @@
+LOAD DATABASE
+     FROM mssql://pgloader:Sarah923@host.docker.internal/TravelExperts
+     INTO postgresql://travel_experts_user:rpEUEp5RVqZHdsDa7zJWw2DYaMHclav5@dpg-d5ki1sdactks739232c0-a.virginia-postgres.render.com:5432/travel_experts?sslmode=allow
+
+WITH include drop, create tables, create indexes, reset sequences,
+     workers = 1, concurrency = 1;
+

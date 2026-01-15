@@ -5,8 +5,11 @@ using Workshop04.Data.Data;
 using Workshop04.Data.Models;
 using Workshop04.Data;
 using Workshop04.Services;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -18,8 +21,9 @@ builder.Services.AddRazorPages();
 //    builder.Configuration.GetConnectionString("TravelExpertsConnection")));
 
 builder.Services.AddDbContext<TravelExpertsContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+    options
+        .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+        .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning)));
 
 
 
@@ -61,6 +65,13 @@ builder.Services.AddSession(options =>
 });
 
 var app = builder.Build();
+
+// Create the database if it doesn't exist
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<TravelExpertsContext>();
+    db.Database.EnsureCreated();
+}
 
 //auto-create/update the SQLite DB on startup
 using (var scope = app.Services.CreateScope())
