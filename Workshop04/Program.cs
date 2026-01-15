@@ -67,11 +67,18 @@ builder.Services.AddSession(options =>
 var app = builder.Build();
 
 // Create the database if it doesn't exist
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<TravelExpertsContext>();
-    db.Database.EnsureCreated();
-}
+//using (var scope = app.Services.CreateScope())
+//{
+//    var db = scope.ServiceProvider.GetRequiredService<TravelExpertsContext>();
+//    db.Database.EnsureCreated();
+//}
+
+
+builder.Services.AddDbContext<TravelExpertsContext>(options =>
+    options.UseNpgsql(
+        builder.Configuration.GetConnectionString("DefaultConnection"))
+           .UseLowerCaseNamingConvention()
+);
 
 //auto-create/update the SQLite DB on startup
 //using (var scope = app.Services.CreateScope())
