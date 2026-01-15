@@ -62,6 +62,13 @@ builder.Services.AddSession(options =>
 
 var app = builder.Build();
 
+//auto-create/update the SQLite DB on startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<TravelExpertsContext>();
+    db.Database.Migrate();
+}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -87,5 +94,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+Directory.CreateDirectory("/var/data");
 
 app.Run();
