@@ -20,10 +20,10 @@ builder.Services.AddRazorPages();
 //options.UseSqlServer(
 //    builder.Configuration.GetConnectionString("TravelExpertsConnection")));
 
-builder.Services.AddDbContext<TravelExpertsContext>(options =>
-    options
-        .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
-        .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning)));
+//builder.Services.AddDbContext<TravelExpertsContext>(options =>
+//    options
+//        .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+//        .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning)));
 
 
 
@@ -66,10 +66,10 @@ builder.Services.AddSession(options =>
 
 
 builder.Services.AddDbContext<TravelExpertsContext>(options =>
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString("DefaultConnection"))
-           .UseLowerCaseNamingConvention()
-);
+    options
+        .UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))
+        .UseLowerCaseNamingConvention()
+        .ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning)));
 
 var app = builder.Build();
 

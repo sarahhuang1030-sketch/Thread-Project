@@ -54,16 +54,29 @@ public class TravelExpertsContext : IdentityDbContext<Customer>
         // ✅ REQUIRED for Identity
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<Agent>().ToTable("Agents", t => t.ExcludeFromMigrations());
-        modelBuilder.Entity<Booking>().ToTable("Bookings", t => t.ExcludeFromMigrations());
-        modelBuilder.Entity<BookingDetail>().ToTable("BookingDetails", t => t.ExcludeFromMigrations());
-        modelBuilder.Entity<Class>().ToTable("Classes", t => t.ExcludeFromMigrations());
-        modelBuilder.Entity<CustomerPreferences>().ToTable("CustomerPreferences", t => t.ExcludeFromMigrations());
-        modelBuilder.Entity<Package>().ToTable("Packages", t => t.ExcludeFromMigrations());
-        modelBuilder.Entity<PackagesProductsSupplier>().ToTable("Packages_Products_Suppliers", t => t.ExcludeFromMigrations());
-        modelBuilder.Entity<Product>().ToTable("Products", t => t.ExcludeFromMigrations());
-        modelBuilder.Entity<Supplier>().ToTable("Suppliers", t => t.ExcludeFromMigrations());
-        modelBuilder.Entity<Agency>().ToTable("Agencies", t => t.ExcludeFromMigrations());
+        //modelBuilder.Entity<Agent>().ToTable("Agents", t => t.ExcludeFromMigrations());
+        //modelBuilder.Entity<Booking>().ToTable("Bookings", t => t.ExcludeFromMigrations());
+        //modelBuilder.Entity<BookingDetail>().ToTable("BookingDetails", t => t.ExcludeFromMigrations());
+        //modelBuilder.Entity<Class>().ToTable("Classes", t => t.ExcludeFromMigrations());
+        //modelBuilder.Entity<CustomerPreferences>().ToTable("CustomerPreferences", t => t.ExcludeFromMigrations());
+        //modelBuilder.Entity<Package>().ToTable("Packages", t => t.ExcludeFromMigrations());
+        //modelBuilder.Entity<PackagesProductsSupplier>().ToTable("Packages_Products_Suppliers", t => t.ExcludeFromMigrations());
+        //modelBuilder.Entity<Product>().ToTable("Products", t => t.ExcludeFromMigrations());
+        //modelBuilder.Entity<Supplier>().ToTable("Suppliers", t => t.ExcludeFromMigrations());
+        //modelBuilder.Entity<Agency>().ToTable("Agencies", t => t.ExcludeFromMigrations());
+
+        //to match psql
+        modelBuilder.Entity<Agent>().ToTable("agents", t => t.ExcludeFromMigrations());
+        modelBuilder.Entity<Booking>().ToTable("bookings", t => t.ExcludeFromMigrations());
+        modelBuilder.Entity<BookingDetail>().ToTable("bookingdetails", t => t.ExcludeFromMigrations());
+        modelBuilder.Entity<Class>().ToTable("classes", t => t.ExcludeFromMigrations());
+        modelBuilder.Entity<CustomerPreferences>().ToTable("customerpreferences", t => t.ExcludeFromMigrations());
+        modelBuilder.Entity<Package>().ToTable("packages", t => t.ExcludeFromMigrations());
+        modelBuilder.Entity<PackagesProductsSupplier>().ToTable("packages_products_suppliers", t => t.ExcludeFromMigrations());
+        modelBuilder.Entity<Product>().ToTable("products", t => t.ExcludeFromMigrations());
+        modelBuilder.Entity<Supplier>().ToTable("suppliers", t => t.ExcludeFromMigrations());
+        modelBuilder.Entity<Agency>().ToTable("agencies", t => t.ExcludeFromMigrations());
+
 
 
         modelBuilder.Entity<Booking>()
