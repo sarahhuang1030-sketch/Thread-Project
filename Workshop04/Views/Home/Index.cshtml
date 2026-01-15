@@ -1,0 +1,90 @@
+﻿@model IEnumerable<Workshop04.Data.Data.DTO.PackageDTO>
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+ @* Hero Section *@
+<section class="hero">
+    <div class="hero-content text-center">
+        <h1 class="hero-title">Curated Journeys for <br>the Discerning Traveler</h1>
+        <p class="hero-subtitle">Bespoke Travel Experiences</p>
+        <a class="hero-button" asp-area="" asp-controller="Packages" asp-action="Index">Explore Destinations</a>
+    </div>
+</section>
+
+@* Account Deletion Success Message *@
+@if (TempData["AccountDeleted"] != null)
+{
+    <div class="container" style="margin-top: -3rem; margin-bottom: 3rem;">
+        <div class="alert alert-success" style="border: 2px solid #3D5A44; background-color: rgba(61, 90, 68, 0.1); text-align: center;">
+            <i class="fas fa-check-circle me-2"></i>
+            <strong>@TempData["AccountDeleted"]</strong> We're sorry to see you go.
+        </div>
+    </div>
+}
+
+@* Features Section *@
+<section class="feature text-center">
+    <h2 class="feature-section-title">Why Choose Us</h2>
+    <p class="feature-section-subtitle">Excellence in every detail</p>
+
+    @* display a grid for all features *@
+    <div class="feature-grid">
+        <div class="feature-card">
+            <div class="feature-icon">✦</div>
+            <h3 class="feature-title">Personalized Service</h3>
+            <p class="feature-description">Each journey is meticulously crafted to match your unique preferences and travel style.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">◈</div>
+            <h3 class="feature-title">Expert Guidance</h3>
+            <p class="feature-description">Our seasoned travel consultants bring decades of experience to every recommendation.</p>
+        </div>
+        <div class="feature-card">
+            <div class="feature-icon">✧</div>
+            <h3 class="feature-title">Exclusive Access</h3>
+            <p class="feature-description">Experience destinations through privileged connections and insider knowledge.</p>
+        </div>
+    </div>
+</section>
+
+
+<section class="featured-package">
+    <h2 class="featured-package-section-title text-center">Featured Packages</h2>
+    <p class="featured-package-section-subtitle text-center">Our Handpicked destinations</p>
+
+    @* Display error if no connection to database *@
+    @if (TempData["Message"] != null)
+    {
+        <h4 class="text-center  @((bool)(TempData["IsError"])! == true ? "text-danger database-error" : "text-success")">
+            @TempData["Message"]
+        </h4>
+    }
+
+    <div class="featured-package-grid">
+        @* Populate from database here *@
+        @* get 3 packages from database to display data DTO*@
+        @foreach (var item in Model)
+        {
+            <div class="featured-package-card">
+                <div class="featured-package-image">
+                    <img src="~/images/package-cards/mountain.jpg" /> @*Image for card*@
+                </div>
+                <div class="featured-package-content">
+                    <h3 class="featured-package-title">
+                        @Html.DisplayFor(modelItem => item.PkgName)
+                    </h3>
+                    <p class="featured-package-description">
+                        @Html.DisplayFor(modelItem => item.PkgDesc)
+                    </p>
+                    <div class="featured-package-price">
+                        @Html.DisplayFor(modelItem => item.PkgBasePrice)
+                    </div>
+                    <a class="featured-package-button text-center" asp-area="" asp-controller="Packages" asp-action="Details" asp-route-id="@item.PackageId">View Details</a>
+                </div>
+            </div>
+        }
+
+    </div>
+</section>

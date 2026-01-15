@@ -1,0 +1,151 @@
+﻿@page
+@model PersonalDataModel
+@{
+    ViewData["Title"] = "Personal Data";
+    ViewData["ActivePage"] = ManageNavPages.PersonalData;
+}
+
+<div class="card no-hover">
+    <div class="card-header" style="padding: 2rem;">
+        <h3 style="font-family: var(--te-heading-font); color: var(--te-cream); margin: 0; font-size: 1.75rem;">Personal Data</h3>
+    </div>
+    <div class="card-body" style="padding: 3rem;">
+        <partial name="_StatusMessage" for="StatusMessage" />
+        
+        <p style="color: var(--te-deep-navy); font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem;">
+            Your account contains personal data that you have given us. This page allows you to delete that data and your account.
+        </p>
+
+        <!-- Delete Section -->
+        <div style="padding: 2rem; background-color: rgba(184, 92, 80, 0.05); border-radius: var(--bs-border-radius); border-left: 4px solid var(--te-accent-red);">
+            <h5 style="font-family: var(--te-heading-font); color: var(--te-deep-navy); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fas fa-exclamation-triangle" style="color: var(--te-accent-red);"></i>
+                Delete Your Account
+            </h5>
+            <div class="alert alert-danger" style="margin-bottom: 1.5rem; border: 2px solid var(--te-accent-red); background-color: rgba(184, 92, 80, 0.1);">
+                <strong style="display: block; margin-bottom: 0.5rem;">
+                    <i class="fas fa-exclamation-circle me-2"></i>Warning: This action cannot be undone!
+                </strong>
+                <p style="margin: 0; font-size: 0.95rem;">
+                    Deleting this data will permanently remove your account, including all bookings, preferences, and personal information. This action cannot be recovered.
+                </p>
+            </div>
+            <button type="button" id="delete-button" class="btn btn-danger" style="padding: 0.875rem 2rem;">
+                <i class="fas fa-trash-alt me-2"></i> Delete Account
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Privacy Info Card -->
+<div class="card no-hover" style="margin-top: 2rem;">
+    <div class="card-body" style="padding: 2rem;">
+        <div style="display: flex; align-items: start; gap: 1rem;">
+            <div style="font-size: 2rem; color: var(--te-gold);">
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <div>
+                <h5 style="font-family: var(--te-heading-font); color: var(--te-deep-navy); margin-bottom: 0.5rem;">Your Privacy Matters</h5>
+                <p style="color: var(--te-soft-gray); line-height: 1.7; margin: 0;">
+                    We take your privacy seriously. Your personal data is securely stored and only used to provide you with the best travel experience.
+                    For more information, please review our <a href="#" style="color: var(--te-gold);">Privacy Policy</a>.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmationModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2" style="color: var(--te-accent-red);"></i>
+                    Confirm Account Deletion
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div style="padding: 1rem 0;">
+                    <p style="font-size: 1.05rem; color: var(--te-deep-navy); margin-bottom: 1.5rem;">
+                        Are you absolutely sure you want to delete your account? This action is <strong>permanent</strong> and cannot be undone.
+                    </p>
+                    
+                    <div style="background-color: rgba(184, 92, 80, 0.1); padding: 1.5rem; border-radius: var(--bs-border-radius); border-left: 4px solid var(--te-accent-red); margin-bottom: 1.5rem;">
+                        <h6 style="color: var(--te-accent-red); font-weight: 600; margin-bottom: 0.75rem;">
+                            <i class="fas fa-times-circle me-2"></i>What will be deleted:
+                        </h6>
+                        <ul style="margin: 0; padding-left: 1.5rem; color: var(--te-deep-navy);">
+                            <li>All personal information</li>
+                            <li>All booking history</li>
+                            <li>All preferences and settings</li>
+                            <li>Profile picture</li>
+                            <li>Credit balance</li>
+                        </ul>
+                    </div>
+
+                    <form id="delete-form" method="post" asp-page-handler="DeleteAccount">
+                        <div class="mb-3">
+                            <label for="passwordConfirm" class="form-label" style="font-weight: 500; color: var(--te-deep-navy);">
+                                Please enter your password to confirm:
+                            </label>
+                            <input asp-for="Input.Password" type="password" class="form-control" id="passwordConfirm" required 
+                                   placeholder="Enter your password" style="padding: 0.75rem 1rem;" />
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer" style="border-top: 1px solid #E5E0D8; padding: 1.25rem 1.5rem;">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="padding: 0.75rem 1.5rem;">
+                    <i class="fas fa-times me-2"></i> Cancel
+                </button>
+                <button type="button" id="confirm-delete-button" class="btn btn-danger" style="padding: 0.75rem 1.5rem;">
+                    <i class="fas fa-trash-alt me-2"></i> Yes, Delete My Account
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButton = document.getElementById('delete-button');
+            const confirmDeleteButton = document.getElementById('confirm-delete-button');
+            const deleteForm = document.getElementById('delete-form');
+            const modal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
+
+            // Show modal when delete button is clicked
+            deleteButton.addEventListener('click', function() {
+                modal.show();
+            });
+
+            // Submit form when confirm button is clicked
+            confirmDeleteButton.addEventListener('click', function() {
+                const passwordInput = document.getElementById('passwordConfirm');
+                
+                if (passwordInput.value.trim() === '') {
+                    passwordInput.focus();
+                    passwordInput.classList.add('is-invalid');
+                    return;
+                }
+                
+                passwordInput.classList.remove('is-invalid');
+                
+                // Add loading state
+                confirmDeleteButton.disabled = true;
+                confirmDeleteButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Deleting...';
+                
+                deleteForm.submit();
+            });
+
+            // Remove invalid class when user starts typing
+            document.getElementById('passwordConfirm').addEventListener('input', function() {
+                this.classList.remove('is-invalid');
+            });
+        });
+    </script>
+}

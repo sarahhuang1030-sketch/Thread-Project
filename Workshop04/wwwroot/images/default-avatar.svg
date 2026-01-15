@@ -1,0 +1,10 @@
+<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="200" cy="200" r="200" fill="#B4E4D5"/>
+  
+  <!-- Head -->
+  <circle cx="200" cy="160" r="70" fill="#FFFFFF"/>
+  
+  <!-- Body -->
+  <ellipse cx="200" cy="320" rx="100" ry="80" fill="#FFFFFF"/>
+</svg>

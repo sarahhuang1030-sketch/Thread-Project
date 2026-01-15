@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Workshop04.Data/Workshop04.Data.csproj" Id="4a413fce-dc82-4dfd-9efe-c75351ce18f6" />
+  <Project Path="Workshop04/Workshop04.csproj" />
+</Solution>

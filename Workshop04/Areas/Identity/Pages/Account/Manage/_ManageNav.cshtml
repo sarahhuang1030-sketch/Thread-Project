@@ -1,0 +1,58 @@
+﻿@inject SignInManager<Customer> SignInManager
+@inject UserManager<Customer> UserManager
+@{
+    var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+    var user = await UserManager.GetUserAsync(User);
+    var profilePicture = string.IsNullOrEmpty(user?.ProfileImagePath) 
+        ? "/images/default-avatar.svg" 
+        : $"{user.ProfileImagePath}?v={DateTime.UtcNow.Ticks}";
+}
+
+<div class="card manage-nav-container" style="position: sticky; top: 2rem;">
+    <div class="card-body" style="padding: 2rem 1.5rem;">
+        <!-- Profile Picture Section -->
+        <div class="text-center mb-3 pb-3 border-bottom">
+            <img src="@profilePicture" 
+                 alt="Profile" 
+                 class="profile-picture-nav rounded-circle mb-2" 
+                 onerror="this.onerror=null; this.src='/images/default-avatar.svg';" />
+            <div class="fw-bold" style="color: var(--te-deep-navy); font-size: 1rem;">@(user?.CustFirstName ?? User.Identity.Name)</div>
+            <small style="color: var(--te-soft-gray); font-size: 0.85rem;">@User.Identity.Name</small>
+        </div>
+        
+        <h5 style="font-family: var(--te-heading-font); color: var(--te-deep-navy); margin-bottom: 1.5rem; font-size: 1.25rem;">Account Settings</h5>
+        <nav class="nav flex-column manage-nav">
+            <a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">
+                <i class="fas fa-user"></i> Profile
+            </a>
+            <a class="nav-link @ManageNavPages.PreferencesNavClass(ViewContext)" id="preferences" asp-page="./Preferences">
+                <i class="fas fa-heart"></i> Travel Preferences
+            </a>
+            <a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">
+                <i class="fas fa-envelope"></i> Email
+            </a>
+            <a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">
+                <i class="fas fa-lock"></i> Password
+            </a>
+
+            @if (hasExternalLogins)
+            {
+                <a id="external-login" class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins">
+                    <i class="fas fa-link"></i> External logins
+                </a>
+            }
+            <a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">
+                <i class="fas fa-database"></i> Personal data
+            </a>
+        </nav>
+        <h5 style="font-family: var(--te-heading-font); color: var(--te-deep-navy); margin-bottom: 1.5rem; font-size: 1.25rem; margin-top: 1.5rem;">Travel Settings</h5>
+        <nav class="nav flex-column manage-nav">
+            <a class="nav-link" asp-controller="Packages" asp-action="Index">
+                <i class="fas fa-plane"></i> Browse Packages
+            </a>
+            <a class="nav-link" asp-controller="Packages" asp-action="MyBookings">
+                <i class="fas fa-suitcase"></i> My Bookings
+            </a>
+        </nav>
+    </div>
+</div>

@@ -1,0 +1,27 @@
+﻿@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+<div class="profile-page" style="background-color: var(--te-cream); min-height: 100vh; padding: 3rem 0;">
+    <div class="container" style="max-width: 1200px;">
+        <div class="profile-header" style="margin-bottom: 3rem;">
+            <h1 style="font-family: var(--te-heading-font); font-size: 3rem; color: var(--te-deep-navy); margin-bottom: 0.5rem;">Manage Your Account</h1>
+            <p style="color: var(--te-soft-gray); font-size: 1.1rem; letter-spacing: 0.5px;">Update your personal information and preferences</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-3">
+                <partial name="_ManageNav" />
+            </div>
+            <div class="col-lg-9">
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @await RenderSectionAsync("Scripts", required: false)
+}

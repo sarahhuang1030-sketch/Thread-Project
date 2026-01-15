@@ -1,0 +1,49 @@
+﻿@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<Customer> SignInManager
+@inject UserManager<Customer> UserManager
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(User))
+    {
+        var user = await UserManager.GetUserAsync(User);
+        var profilePicture = string.IsNullOrEmpty(user?.ProfileImagePath) 
+            ? "/images/default-avatar.svg" 
+            : $"{user.ProfileImagePath}?v={DateTime.UtcNow.Ticks}";
+        
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle d-flex align-items-center fw-semibold px-3" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <img src="@profilePicture" alt="Profile" class="rounded-circle me-2" style="width: 32px; height: 32px; object-fit: cover; border: 2px solid var(--te-mint);" />
+                <span>@UserManager.GetUserName(User)</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
+                    <i class="fas fa-user me-2"></i>My Profile
+                </a></li>
+                <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Profile">
+                    <i class="fas fa-id-card me-2"></i>View Profile
+                </a></li>
+                <li><a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/ChangePassword">
+                    <i class="fas fa-cog me-2"></i>Manage Account
+                </a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form class="dropdown-item p-0" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post">
+                        <button type="submit" class="btn btn-link text-decoration-none w-100 text-start text-danger" style="padding: 0.5rem 1rem;">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        </li>
+    }
+</ul>

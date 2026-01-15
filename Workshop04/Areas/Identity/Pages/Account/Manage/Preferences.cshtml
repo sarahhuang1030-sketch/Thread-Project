@@ -1,0 +1,122 @@
+﻿@page
+@model PreferencesModel
+@{
+    ViewData["Title"] = "Travel Preferences";
+    ViewData["ActivePage"] = ManageNavPages.Preferences;
+}
+
+<div class="card no-hover">
+    <div class="card-header" style="padding: 2rem;">
+        <h3 style="font-family: var(--te-heading-font); color: var(--te-cream); margin: 0; font-size: 1.75rem;">
+            <i class="fas fa-globe-americas me-2"></i>Travel Preferences
+        </h3>
+    </div>
+    <div class="card-body" style="padding: 3rem;">
+        <partial name="_StatusMessage" for="StatusMessage" />
+
+        <p style="color: var(--te-soft-gray); margin-bottom: 2.5rem; line-height: 1.7; font-size: 1.05rem;">
+            Help us personalize your travel experience by sharing your preferences. We'll use this information to recommend packages tailored to your interests.
+        </p>
+
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert" style="margin-bottom: 2rem;"></div>
+
+            <!-- Preferred Climate -->
+            <div class="form-group" style="margin-bottom: 2rem;">
+                <label asp-for="Input.PreferredClimate" style="display: block; margin-bottom: 0.75rem; color: var(--te-deep-navy); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; font-size: 0.9rem;">
+                    <i class="fas fa-sun me-2" style="color: var(--te-gold);"></i>Preferred Climate
+                </label>
+                <select asp-for="Input.PreferredClimate" class="form-select" asp-items="Model.ClimateOptions" style="padding: 1rem; font-size: 1rem;">
+                    <option value="">Select your climate preference...</option>
+                </select>
+                <span asp-validation-for="Input.PreferredClimate" class="text-danger"></span>
+            </div>
+
+            <!-- Preferred Activities -->
+            <div class="form-group" style="margin-bottom: 2rem;">
+                <label style="display: block; margin-bottom: 1rem; color: var(--te-deep-navy); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; font-size: 0.9rem;">
+                    <i class="fas fa-hiking me-2" style="color: var(--te-gold);"></i>Preferred Activities
+                </label>
+                <p style="color: var(--te-soft-gray); font-size: 0.9rem; margin-bottom: 1rem;">Select all that interest you</p>
+                <div class="activity-checkboxes">
+                    @foreach (var activity in Model.ActivityOptions)
+                    {
+                        <div class="form-check">
+                            <input type="checkbox"
+                                   name="Input.PreferredActivities"
+                                   value="@activity.Value"
+                                   class="form-check-input"
+                                   id="pref-activity-@activity.Value"
+                                   checked="@(Model.Input.PreferredActivities?.Contains(activity.Value) ?? false)" />
+                            <label class="form-check-label" for="pref-activity-@activity.Value">
+                                @activity.Text
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Travel Companion -->
+            <div class="form-group" style="margin-bottom: 2rem;">
+                <label asp-for="Input.TravelCompanion" style="display: block; margin-bottom: 0.75rem; color: var(--te-deep-navy); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; font-size: 0.9rem;">
+                    <i class="fas fa-users me-2" style="color: var(--te-gold);"></i>Travel Companion
+                </label>
+                <select asp-for="Input.TravelCompanion" class="form-select" asp-items="Model.CompanionOptions" style="padding: 1rem; font-size: 1rem;">
+                    <option value="">Select your travel companion preference...</option>
+                </select>
+                <span asp-validation-for="Input.TravelCompanion" class="text-danger"></span>
+            </div>
+
+            <!-- Preferred Location -->
+            <div class="form-group" style="margin-bottom: 2.5rem;">
+                <label asp-for="Input.PreferredLocation" style="display: block; margin-bottom: 0.75rem; color: var(--te-deep-navy); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; font-size: 0.9rem;">
+                    <i class="fas fa-map-marker-alt me-2" style="color: var(--te-gold);"></i>Preferred Location Type
+                </label>
+                <select asp-for="Input.PreferredLocation" class="form-select" asp-items="Model.LocationOptions" style="padding: 1rem; font-size: 1rem;">
+                    <option value="">Select your location preference...</option>
+                </select>
+                <span asp-validation-for="Input.PreferredLocation" class="text-danger"></span>
+            </div>
+
+            <div style="padding-top: 1rem; border-top: 2px solid #E5E0D8;">
+                <button type="submit" class="btn btn-primary btn-lg" style="padding: 1rem 3rem; font-size: 1rem;">
+                    <i class="fas fa-save me-2"></i> Save Preferences
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Info Card -->
+<div class="card no-hover" style="margin-top: 2rem;">
+    <div class="card-body" style="padding: 2rem;">
+        <div style="display: flex; align-items: start; gap: 1rem;">
+            <div style="font-size: 2rem; color: var(--te-gold);">
+                <i class="fas fa-magic"></i>
+            </div>
+            <div>
+                <h5 style="font-family: var(--te-heading-font); color: var(--te-deep-navy); margin-bottom: 0.5rem;">Personalized Recommendations</h5>
+                <p style="color: var(--te-soft-gray); line-height: 1.7; margin: 0;">
+                    Based on your preferences, we'll curate travel packages that match your interests and help you discover destinations tailored to your travel style. Update these preferences anytime to refine your recommendations.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Make entire activity card clickable
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.activity-checkboxes .form-check').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    if (e.target.type !== 'checkbox') {
+                        const checkbox = this.querySelector('input[type="checkbox"]');
+                        checkbox.checked = !checkbox.checked;
+                    }
+                });
+            });
+        });
+    </script>
+}

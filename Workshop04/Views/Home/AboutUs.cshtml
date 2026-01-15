@@ -1,0 +1,79 @@
+﻿
+@{
+    ViewData["Title"] = "AboutUs";
+}
+
+@* Hero section *@
+<section class="sub-hero">
+    <div class="hero-content text-center">
+        <h1 class="hero-title">About Us</h1>
+        <p class="hero-subtitle">Decades of crafting unforgettable journeys<br>for discerning travelers around the globe</p>
+    </div>
+</section>
+
+@* About section *@
+<section class="about">
+    <div class="about-container">
+
+        @* Carousel for about*@
+        <div id="about-carousel" class="carousel slide">
+            <div class="carousel-inner">
+                <div class="carousel-item active about-image">
+                    <img src="~/images/about-us/desert.jpg" />
+                </div>
+                <div class="carousel-item about-image">
+                    <img src="~/images/about-us/mountain-trail.jpg" />
+                </div>
+                <div class="carousel-item about-image">
+                    <img src="~/images/about-us/shore.jpg" />
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#about-carousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#about-carousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+
+        @* about content *@
+        <div class="about-content">
+            <h2>Who We Are</h2>
+            <p>Travel Experts was born from a simple belief: that travel should be more than just a destination — it should be a transformative experience that enriches the soul.</p>
+            <p>What began as a small boutique agency evolved into a trusted travel partner, helping clients explore destinations around the world with confidence and ease. </p>
+            <p>Today, we serve hundreds of discerning travelers annually, each receiving the same personalized attention and meticulous care that defined our earliest journeys.</p>
+        </div>
+    </div>
+</section>
+
+@* Values section *@
+<section class="value text-center">
+    <h2 class="value-section-title">Our Values</h2>
+    <p class="value-section-subtitle">The principles that guide every journey</p>
+
+    <div class="value-grid">
+        <div class="value-card">
+            <h3 class="value-card-title">Excellence</h3>
+            <p class="value-card-desc">We pursue perfection in every detail, from the moment you contact us to your return home.</p>
+        </div>
+        <div class="value-card">
+            <h3 class="value-card-title">Authenticity</h3>
+            <p class="value-card-desc">We connect you with genuine local experiences that reveal the true character of each destination.</p>
+        </div>
+        <div class="value-card">
+            <h3 class="value-card-title">Sustainability</h3>
+            <p class="value-card-desc">We partner with eco-conscious providers and support communities in the places you visit.</p>
+        </div>
+    </div>
+</section>
+
+@* Call to Action Section *@
+<section class="sub-hero">
+        <div class="hero-content text-center">
+            <h1 class="text-primary pb-5 cta-label">Ready for Your Next Adventure?</h1>
+            @* <p class="hero-subtitle">Contact our expert travel consultants today and start planning your bespoke journey.</p> *@
+            <a class="hero-button" asp-area="" asp-controller="Packages" asp-action="Index">Start Now</a> @* This button will lead to the packages page *@
+        </div>
+</section>

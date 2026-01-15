@@ -1,0 +1,210 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+    var profilePictureUrl = string.IsNullOrEmpty(Model.CurrentProfilePicture)
+        ? "/images/default-avatar.svg"
+        : $"{Model.CurrentProfilePicture}?v={DateTime.UtcNow.Ticks}";
+}
+
+<div class="row">
+    <div class="col-lg-10">
+        <div class="card mb-4">
+            <div class="card-header" style="padding: 2rem;">
+                <h3 style="font-family: var(--te-heading-font); color: var(--te-cream); margin: 0; font-size: 1.75rem;">
+                    <i class="fas fa-user-circle me-2"></i>Profile Information
+                </h3>
+            </div>
+
+            <div class="card-body" style="padding: 3rem;">
+                <partial name="_StatusMessage" for="StatusMessage" />
+
+                <form id="profile-form" method="post" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert" style="margin-bottom: 2rem;"></div>
+
+                    <!-- Profile Picture Section -->
+                    <div style="margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 2px solid #E5E0D8;">
+                        <h5 style="font-family: var(--te-heading-font); color: var(--te-deep-navy); margin-bottom: 1.5rem; font-size: 1.25rem;">
+                            <i class="fas fa-camera me-2"></i>Profile Picture
+                        </h5>
+                        <div class="text-center">
+                            <div class="profile-picture-container mb-3">
+                                <img id="profile-picture-preview"
+                                     src="@profilePictureUrl"
+                                     alt="Profile Picture"
+                                     class="profile-picture-large rounded-circle" />
+                            </div>
+                            <div class="mb-3">
+                                <input type="file"
+                                       asp-for="Input.ProfilePicture"
+                                       accept="image/*"
+                                       class="form-control"
+                                       id="profile-picture-input"
+                                       style="max-width: 450px; margin: 0 auto;" />
+                                <span asp-validation-for="Input.ProfilePicture" class="text-danger"></span>
+                                <small style="color: var(--te-soft-gray); margin-top: 0.5rem; display: block; font-size: 0.85rem;">
+                                    Accepted formats: JPG, PNG, GIF (max 5MB)
+                                </small>
+                            </div>
+                            @if (!string.IsNullOrEmpty(Model.CurrentProfilePicture))
+                            {
+                                <div class="remove-picture-option">
+                                    <div class="form-check">
+                                        <input type="checkbox"
+                                               asp-for="RemoveProfilePicture"
+                                               class="form-check-input"
+                                               id="remove-picture-checkbox" />
+                                        <label asp-for="RemoveProfilePicture"
+                                               class="form-check-label"
+                                               for="remove-picture-checkbox">
+                                            <i class="fas fa-trash-alt"></i> Remove current picture
+                                        </label>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Credit Balance Display -->
+                    <div style="margin-bottom: 3rem; padding: 1.25rem 1.5rem; background: linear-gradient(135deg, rgba(201, 169, 96, 0.08) 0%, rgba(201, 169, 96, 0.03) 100%); border-radius: var(--bs-border-radius); border-left: 4px solid var(--te-gold); display: flex; align-items: center; justify-content: space-between;">
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div style="width: 50px; height: 50px; background: linear-gradient(135deg, var(--te-gold) 0%, #A88B50 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-wallet" style="color: white; font-size: 1.25rem;"></i>
+                            </div>
+                            <div>
+                                <div style="font-size: 0.8rem; color: var(--te-soft-gray); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.25rem;">
+                                    Account Balance
+                                </div>
+                                <div style="font-family: var(--te-heading-font); font-size: 1.75rem; color: var(--te-gold); font-weight: 600;">
+                                    @Model.CreditBalance.ToString("C")
+                                </div>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <small style="color: var(--te-soft-gray); font-size: 0.8rem;">
+                                <i class="fas fa-info-circle me-1"></i>Available for bookings
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Account Information Section -->
+                    <div style="margin-bottom: 3rem;">
+                        <h5 style="font-family: var(--te-heading-font); color: var(--te-deep-navy); margin-bottom: 1.5rem; font-size: 1.25rem;">
+                            <i class="fas fa-user me-2"></i>Account Information
+                        </h5>
+
+                        <div class="form-group" style="margin-bottom: 2rem;">
+                            <label asp-for="Username" style="display: block; margin-bottom: 0.75rem; color: var(--te-deep-navy); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; font-size: 0.9rem;">Username</label>
+                            <input asp-for="Username" class="form-control" placeholder="Your username" disabled style="background-color: #f5f5f5; cursor: not-allowed; padding: 1rem; font-size: 1rem;" />
+                            <small style="color: var(--te-soft-gray); margin-top: 0.5rem; display: block; font-size: 0.85rem;">
+                                <i class="fas fa-lock me-1"></i>Your username cannot be changed
+                            </small>
+                        </div>
+
+                        <!-- Name Fields -->
+                        <div class="row g-3" style="margin-bottom: 2rem;">
+                            <div class="col-md-6">
+                                <label asp-for="Input.FirstName" style="display: block; margin-bottom: 0.75rem; color: var(--te-deep-navy); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; font-size: 0.9rem;">First Name</label>
+                                <input asp-for="Input.FirstName" class="form-control" placeholder="John" style="padding: 1rem; font-size: 1rem;" />
+                                <span asp-validation-for="Input.FirstName" class="text-danger" style="margin-top: 0.5rem; display: block; font-size: 0.9rem;"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.LastName" style="display: block; margin-bottom: 0.75rem; color: var(--te-deep-navy); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; font-size: 0.9rem;">Last Name</label>
+                                <input asp-for="Input.LastName" class="form-control" placeholder="Smith" style="padding: 1rem; font-size: 1rem;" />
+                                <span asp-validation-for="Input.LastName" class="text-danger" style="margin-top: 0.5rem; display: block; font-size: 0.9rem;"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information Section -->
+                    <div style="margin-bottom: 3rem; padding-top: 2rem; border-top: 2px solid #E5E0D8;">
+                        <h5 style="font-family: var(--te-heading-font); color: var(--te-deep-navy); margin-bottom: 1.5rem; font-size: 1.25rem;">
+                            <i class="fas fa-phone me-2"></i>Contact Information
+                        </h5>
+
+                        <div class="row g-3" style="margin-bottom: 2rem;">
+                            <div class="col-md-6">
+                                <label asp-for="Input.HomePhone" style="display: block; margin-bottom: 0.75rem; color: var(--te-deep-navy); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; font-size: 0.9rem;">Home Phone</label>
+                                <input asp-for="Input.HomePhone" class="form-control" placeholder="XXX-XXX-XXXX" maxlength="12" inputmode="tel" style="padding: 1rem; font-size: 1rem;" />
+                                <span asp-validation-for="Input.HomePhone" class="text-danger" style="margin-top: 0.5rem; display: block; font-size: 0.9rem;"></span>
+                                <small style="color: var(--te-soft-gray); margin-top: 0.5rem; display: block; font-size: 0.85rem;">Required</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Input.BusinessPhone" style="display: block; margin-bottom: 0.75rem; color: var(--te-deep-navy); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; font-size: 0.9rem;">Business Phone</label>
+                                <input asp-for="Input.BusinessPhone" class="form-control" placeholder="XXX-XXX-XXXX" maxlength="12" inputmode="tel" style="padding: 1rem; font-size: 1rem;" />
+                                <span asp-validation-for="Input.BusinessPhone" class="text-danger" style="margin-top: 0.5rem; display: block; font-size: 0.9rem;"></span>
+                                <small style="color: var(--te-soft-gray); margin-top: 0.5rem; display: block; font-size: 0.85rem;">Optional</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Address Information Section -->
+                    <div style="margin-bottom: 3rem; padding-top: 2rem; border-top: 2px solid #E5E0D8;">
+                        <h5 style="font-family: var(--te-heading-font); color: var(--te-deep-navy); margin-bottom: 1.5rem; font-size: 1.25rem;">
+                            <i class="fas fa-map-marker-alt me-2"></i>Address Information
+                        </h5>
+
+                        <div class="form-group" style="margin-bottom: 2rem;">
+                            <label asp-for="Input.Address" style="display: block; margin-bottom: 0.75rem; color: var(--te-deep-navy); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; font-size: 0.9rem;">Street Address</label>
+                            <input asp-for="Input.Address" class="form-control" placeholder="123 Main Street" style="padding: 1rem; font-size: 1rem;" />
+                            <span asp-validation-for="Input.Address" class="text-danger" style="margin-top: 0.5rem; display: block; font-size: 0.9rem;"></span>
+                        </div>
+
+                        <div class="row g-3" style="margin-bottom: 2rem;">
+                            <div class="col-md-5">
+                                <label asp-for="Input.City" style="display: block; margin-bottom: 0.75rem; color: var(--te-deep-navy); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; font-size: 0.9rem;">City</label>
+                                <input asp-for="Input.City" class="form-control" placeholder="Calgary" style="padding: 1rem; font-size: 1rem;" />
+                                <span asp-validation-for="Input.City" class="text-danger" style="margin-top: 0.5rem; display: block; font-size: 0.9rem;"></span>
+                            </div>
+                            <div class="col-md-3">
+                                <label asp-for="Input.Province" style="display: block; margin-bottom: 0.75rem; color: var(--te-deep-navy); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; font-size: 0.9rem;">Province</label>
+                                <input asp-for="Input.Province" class="form-control" placeholder="AB" maxlength="2" style="padding: 1rem; font-size: 1rem;" />
+                                <span asp-validation-for="Input.Province" class="text-danger" style="margin-top: 0.5rem; display: block; font-size: 0.9rem;"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="Input.PostalCode" style="display: block; margin-bottom: 0.75rem; color: var(--te-deep-navy); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; font-size: 0.9rem;">Postal Code</label>
+                                <input asp-for="Input.PostalCode" class="form-control" placeholder="A1A 1A1" maxlength="7" style="padding: 1rem; font-size: 1rem;" />
+                                <span asp-validation-for="Input.PostalCode" class="text-danger" style="margin-top: 0.5rem; display: block; font-size: 0.9rem;"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 2rem;">
+                            <label asp-for="Input.Country" style="display: block; margin-bottom: 0.75rem; color: var(--te-deep-navy); font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; font-size: 0.9rem;">Country</label>
+                            <input asp-for="Input.Country" class="form-control" placeholder="Canada" style="padding: 1rem; font-size: 1rem;" />
+                            <span asp-validation-for="Input.Country" class="text-danger" style="margin-top: 0.5rem; display: block; font-size: 0.9rem;"></span>
+                            <small style="color: var(--te-soft-gray); margin-top: 0.5rem; display: block; font-size: 0.85rem;">Optional</small>
+                        </div>
+                    </div>
+
+                    <!-- Save Button -->
+                    <div style="padding-top: 1.5rem; border-top: 2px solid #E5E0D8;">
+                        <button id="update-profile-button" type="submit" class="btn btn-primary btn-lg" style="padding: 1rem 3rem; font-size: 1rem;">
+                            <i class="fas fa-save me-2"></i> Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/input-formatting.js"></script>
+    <script src="~/js/profile-picture.js"></script>
+    <script>
+        // Make remove picture box clickable
+        document.addEventListener('DOMContentLoaded', function() {
+            const removeBox = document.querySelector('.remove-picture-option');
+            if (removeBox) {
+                removeBox.addEventListener('click', function(e) {
+                    if (e.target.type !== 'checkbox') {
+                        const checkbox = this.querySelector('input[type="checkbox"]');
+                        checkbox.checked = !checkbox.checked;
+                    }
+                });
+            }
+        });
+    </script>
+}

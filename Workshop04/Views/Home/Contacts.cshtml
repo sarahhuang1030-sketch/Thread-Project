@@ -1,0 +1,103 @@
+﻿@model IEnumerable<Workshop04.Data.Data.DTO.AgencyDTO>
+@{
+    ViewData["Title"] = "Contacts";
+}
+
+@* Hero Section *@
+<section class="sub-hero">
+    <div class="hero-content text-center">
+        <h1 class="hero-title">Contact Us</h1>
+        <p class="hero-subtitle">We're here to make your travel dreams a reality</p>
+    </div>
+</section>
+
+@* Agency Card Section *@
+<section class="agency">
+    <h2 class="agency-section-title text-center">Our Locations</h2>
+    <p class="agency-section-subtitle text-center">Visit or call us at any of our offices</p>
+
+    @* Display error if no connection to database *@
+    @if (TempData["Message"] != null)
+    {
+        <h4 class="text-center  @((bool)(TempData["IsError"])! == true ? "text-danger database-error" : "text-success")">
+            @TempData["Message"]
+        </h4>
+    }
+
+    <div class="agency-grid">
+        @* Populate from database here *@
+        @foreach (var item in Model)
+        {
+            <div class="agency-card">
+                @* display city and country as card header *@
+                <div class="agency-header">
+                    <h3 class="agency-city">
+                        @Html.DisplayFor(modelItem => item.AgncyCity)
+                    </h3>
+                    <p class="agency-country">
+                        @Html.DisplayFor(modelItem => item.AgncyCountry)
+                    </p>
+                </div>
+                <div class="agency-card-body">
+                    @* Display address *@
+                    <div class="agency-detail">
+                        <div>
+                            <div class="agency-label">Address</div>
+                            <p class="agency-desc">
+                                @Html.DisplayFor(modelItem => item.AgncyAddress)
+                                <br>
+                                @Html.DisplayFor(modelItem => item.AgncyCity),
+                                @Html.DisplayFor(modelItem => item.AgncyProv) 
+                                @Html.DisplayFor(modelItem => item.AgncyPostal)
+                            </p>
+                        </div>
+                    </div>
+                    @* Display phone number *@
+                    <div class="agency-detail">
+                        <div>
+                            <div class="agency-label">Phone Number</div>
+                            <p class="agency-desc phone-number">@Html.DisplayFor(modelItem => item.AgncyPhone)</p>
+                        </div>
+                    </div>
+                    @* Display fax number *@
+                    <div class="agency-detail">
+                        <div>
+                            <div class="agency-label">Fax Number</div>
+                            <p class="agency-desc phone-number">@Html.DisplayFor(modelItem => item.AgncyFax)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        // Format phone numbers for display
+        function formatPhoneForDisplay(phoneNumber) {
+            if (!phoneNumber) return phoneNumber;
+            
+            // Remove all non-digits
+            const digits = phoneNumber.replace(/\D/g, '');
+            
+            // Format as xxx-xxx-xxxx
+            if (digits.length === 10) {
+                return digits.substring(0, 3) + '-' + digits.substring(3, 6) + '-' + digits.substring(6);
+            }
+            
+            return phoneNumber;
+        }
+
+        // Apply formatting to all phone numbers on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const phoneElements = document.querySelectorAll('.phone-number');
+            phoneElements.forEach(element => {
+                const originalText = element.textContent.trim();
+                element.textContent = formatPhoneForDisplay(originalText);
+            });
+        });
+    </script>
+}
+
+

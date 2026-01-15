@@ -1,0 +1,67 @@
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: travelexperts-db
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Your_strong_Password123!
+    ports:
+      - "1433:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+      - ./db/backup:/backup
+
+  restore:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    depends_on:
+      - db
+    volumes:
+      - sql_data:/var/opt/mssql
+      - ./db/backup:/backup
+    entrypoint: ["/bin/bash","-lc"]
+    command: >
+      "
+      echo 'Waiting for SQL...';
+      for i in {1..60}; do
+        /opt/mssql-tools18/bin/sqlcmd -C -S db -U sa -P 'Your_strong_Password123!' -Q 'SELECT 1' && break;
+        sleep 2;
+      done;
+
+      echo 'Checking if TravelExperts already exists...';
+      EXISTS=$(/opt/mssql-tools18/bin/sqlcmd -C -S db -U sa -P 'Your_strong_Password123!' -h -1 -W -Q \"SET NOCOUNT ON; SELECT CASE WHEN DB_ID('TravelExperts') IS NULL THEN 0 ELSE 1 END\");
+
+      if [ \"$EXISTS\" = \"1\" ]; then
+      echo 'TravelExperts already exists. Skipping restore.';
+      exit 0;
+      fi;
+
+      echo 'Reading logical file names...';
+      /opt/mssql-tools18/bin/sqlcmd -C -S db -U sa -P 'Your_strong_Password123!' -Q \"RESTORE FILELISTONLY FROM DISK='/backup/travelexperts.bak'\";
+
+      echo 'Restoring DB (EDIT logical names below to match FILELISTONLY output)...';
+      /opt/mssql-tools18/bin/sqlcmd -C -S db -U sa -P 'Your_strong_Password123!' -Q \"
+      RESTORE DATABASE TravelExperts
+      FROM DISK = '/backup/travelexperts.bak'
+      WITH
+        MOVE 'TravelExperts'     TO '/var/opt/mssql/data/TravelExperts.mdf',
+        MOVE 'TravelExperts_log' TO '/var/opt/mssql/data/TravelExperts_log.ldf',
+        REPLACE;
+      \"
+      "
+
+  web:
+    build:
+      context: ..
+      dockerfile: Workshop04/Dockerfile
+    container_name: workshop04-web
+    depends_on:
+      - db
+      - restore
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ConnectionStrings__TravelExpertsConnection=Server=db,1433;Database=TravelExperts;User Id=sa;Password=Your_strong_Password123!;TrustServerCertificate=True;MultipleActiveResultSets=true;
+
+volumes:
+  sql_data:

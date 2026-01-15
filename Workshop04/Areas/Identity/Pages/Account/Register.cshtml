@@ -1,0 +1,138 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="register-page">
+    <div class="register-container">
+        <div class="register-card">
+            <div class="register-header">
+                <h1 class="register-title">Begin Your Journey</h1>
+                <p class="register-subtitle">Create your exclusive travel account</p>
+            </div>
+
+            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+                <!-- USERNAME & EMAIL -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="Input.Username">Username</label>
+                        <input asp-for="Input.Username" aria-required="true" placeholder="Bluejay123" />
+                        <span asp-validation-for="Input.Username" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.Email">Email</label>
+                        <input asp-for="Input.Email" autocomplete="email" aria-required="true" placeholder="john.smith@example.com" />
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- FIRST NAME & LAST NAME -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="Input.CustFirstName">First Name</label>
+                        <input asp-for="Input.CustFirstName" aria-required="true" placeholder="John" />
+                        <span asp-validation-for="Input.CustFirstName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.CustLastName">Last Name</label>
+                        <input asp-for="Input.CustLastName" aria-required="true" placeholder="Smith" />
+                        <span asp-validation-for="Input.CustLastName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- ADDRESS -->
+                <div class="form-group">
+                    <label asp-for="Input.CustAddress">Address</label>
+                    <input asp-for="Input.CustAddress" aria-required="true" placeholder="123 Main St" />
+                    <span asp-validation-for="Input.CustAddress" class="text-danger"></span>
+                </div>
+
+                <!-- CITY, PROVINCE, POSTAL CODE -->
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label asp-for="Input.CustCity">City</label>
+                        <input asp-for="Input.CustCity" aria-required="true" placeholder="Calgary" />
+                        <span asp-validation-for="Input.CustCity" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.CustProv">Province</label>
+                        <input asp-for="Input.CustProv" aria-required="true" placeholder="AB" maxlength="2" />
+                        <span asp-validation-for="Input.CustProv" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.CustPostal">Postal Code</label>
+                        <input asp-for="Input.CustPostal" aria-required="true" placeholder="A1A 1A1" />
+                        <span asp-validation-for="Input.CustPostal" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- HOME PHONE & BUSINESS PHONE -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="Input.CustHomePhone">Home Phone</label>
+                        <input asp-for="Input.CustHomePhone" aria-required="true" placeholder="(403) 439-1100" />
+                        <span asp-validation-for="Input.CustHomePhone" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.CustBusPhone">Business Phone (Optional)</label>
+                        <input asp-for="Input.CustBusPhone" placeholder="(403) 439-1100" />
+                        <span asp-validation-for="Input.CustBusPhone" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- PASSWORD & CONFIRM PASSWORD -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="Input.Password">Password</label>
+                        <input asp-for="Input.Password" type="password" autocomplete="new-password" aria-required="true" placeholder="Enter a strong password" />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+                        <input asp-for="Input.ConfirmPassword" type="password" autocomplete="new-password" aria-required="true" placeholder="Confirm your password" />
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <button id="registerSubmit" type="submit" class="submit-button">Create Account</button>
+
+                <div class="login-link">
+                    Already have an account? <a asp-page="./Login">Sign In</a>
+                </div>
+            </form>
+
+            @* External Login Section - Only show if configured *@
+            @if ((Model.ExternalLogins?.Count ?? 0) > 0)
+            {
+                <div style="margin-top: 2rem;">
+                    <div class="divider" style="text-align: center; margin: 2rem 0; position: relative;">
+                        <span style="background-color: var(--te-deep-navy); padding: 0 1rem; color: var(--te-soft-gray); font-size: 0.9rem; position: relative; z-index: 1;">
+                            or register with
+                        </span>
+                        <div style="position: absolute; top: 50%; left: 0; right: 0; height: 1px; background-color: rgba(201, 169, 96, 0.2); z-index: 0;"></div>
+                    </div>
+
+                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                        <div class="social-login" style="display: flex; flex-direction: column; gap: 1rem;">
+                            @foreach (var provider in Model.ExternalLogins!)
+                            {
+                                <button type="submit" class="social-button" name="provider" value="@provider.Name" title="Register using your @provider.DisplayName account"
+                                        style="width: 100%; padding: 1rem; background-color: rgba(250, 247, 242, 0.1); border: 1px solid rgba(201, 169, 96, 0.3); color: var(--te-gold); text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.3s; font-family: 'Montserrat', sans-serif;">
+                                    @provider.DisplayName
+                                </button>
+                            }
+                        </div>
+                    </form>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/input-formatting.js"></script>
+}
