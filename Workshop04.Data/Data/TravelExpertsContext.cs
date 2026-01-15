@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Workshop04.Data.Models;
 
@@ -64,6 +65,15 @@ public class TravelExpertsContext : IdentityDbContext<Customer>
         //modelBuilder.Entity<Product>().ToTable("Products", t => t.ExcludeFromMigrations());
         //modelBuilder.Entity<Supplier>().ToTable("Suppliers", t => t.ExcludeFromMigrations());
         //modelBuilder.Entity<Agency>().ToTable("Agencies", t => t.ExcludeFromMigrations());
+
+        // Force ASP.NET Identity tables to match the tables pgloader created (lowercase in dbo)
+        modelBuilder.Entity<Customer>().ToTable("aspnetusers", "dbo");
+        modelBuilder.Entity<IdentityRole>().ToTable("aspnetroles", "dbo");
+        modelBuilder.Entity<IdentityUserClaim<string>>().ToTable("aspnetuserclaims", "dbo");
+        modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("aspnetuserlogins", "dbo");
+        modelBuilder.Entity<IdentityUserToken<string>>().ToTable("aspnetusertokens", "dbo");
+        modelBuilder.Entity<IdentityUserRole<string>>().ToTable("aspnetuserroles", "dbo");
+        modelBuilder.Entity<IdentityRoleClaim<string>>().ToTable("aspnetroleclaims", "dbo");
 
         //to match psql
         modelBuilder.Entity<Agent>().ToTable("agents", t => t.ExcludeFromMigrations());
